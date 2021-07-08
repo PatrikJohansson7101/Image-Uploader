@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Uploader</title>
+</head>
+<body>
+    
+    <h1>Upload an image here</h1>    
+    <input type="file" id="photo" multiple>
+    <button>Upload image</button>
+    <div id="displayArea"></div>
+    <p id="displayURL"></p>
+    <!-- <img id="image" src="" width="300" height="300"> -->
+    
+
+</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-storage.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBGf0TkrDcd2bXYnJb0G6caa6lUqdw1aNA",
+    authDomain: "imageuploader-fad5e.firebaseapp.com",
+    projectId: "imageuploader-fad5e",
+    storageBucket: "imageuploader-fad5e.appspot.com",
+    messagingSenderId: "197262984449",
+    appId: "1:197262984449:web:e793641fb6eef044d84700"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);  
+  console.log(firebase)
+
+  const btn = document.querySelector('button')
+
+  btn.addEventListener('click', e =>{    
+      const file = document.querySelector('input').files[0]
+      const storageRef = firebase.storage().ref()
+      const final = storageRef.child(`images/${file}`)
+      const task = final.put(file)
+
+      task.on('state_changed',
+		// PROGRESS FUNCTION
+		function progress(progress){
+
+			console.log(progress.bytesTransferred / progress.totalBytes *100)
+		},  
+		function error(err){
+			console.log('There was An Err ' + err)
+		},
+		 function completed(){
+		 	final.getDownloadURL()
+		 	// RETURN A PROMISE
+		 	.then(url=>{
+         
+		 		// SELECTING THE BODY AND APPENDING AN IMG TAG WITH  THE URL
+		 		document.querySelector('#displayArea').innerHTML =`<img src=${url} width="600" height="600" />`
+        document.querySelector('#displayURL').innerHTML = `Here is your URL: ${url}` 
+		 	})
+		 }
+
+		)
+  })
+</script>
+</html>
