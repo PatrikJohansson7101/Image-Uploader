@@ -41,10 +41,12 @@
 
   const btn = document.querySelector('button')
 
+  Math.random() * 100
+
   btn.addEventListener('click', e =>{    
       const file = document.querySelector('input').files[0]
       const storageRef = firebase.storage().ref()
-      const final = storageRef.child(`images/${file}`)
+      const final = storageRef.child(`${Math.random() * 1000}`)
       const task = final.put(file)
 
       task.on('state_changed',
